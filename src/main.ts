@@ -57,7 +57,7 @@ const init = () => {
   clear();
   console.log(
     chalk.blueBright(
-      figlet.textSync("AzureRig-Cli", { horizontalLayout: "full" })
+      figlet.textSync("QuickSuite", { horizontalLayout: "full" })
     )
   );
 };

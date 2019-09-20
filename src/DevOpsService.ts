@@ -25,34 +25,6 @@ export default class {
     this.connection = new azdev.WebApi(params.azDevOps.orgUrl, authHandler);
   }
 
-  async createProject(projectName: string) {
-    try{
-    console.log(chalk.blueBright("Creating Azure DevOps Project"));
-    let core = await this.connection.getCoreApi();
-  
-    const projectToCreate: coreInterfaces.TeamProject = {
-      name: projectName,
-      description: "",
-      visibility: coreInterfaces.ProjectVisibility.Private,
-      capabilities: {
-        versioncontrol: { sourceControlType: "Git" },
-        processTemplate: {
-          templateTypeId: "6b724908-ef14-45cf-84f8-768b5384da45"
-        }
-      }
-    };
-    await core.queueCreateProject(projectToCreate);
-
-    let project = await this.pollForNewProject(projectName);
-
-    this.params.azDevOps.projectId = project!.id || "";
-    console.log(chalk.green("Created Azure DevOps Project"));
-  }catch(err){
-      console.log(chalk.red("Error Creating Azure DevOps Project"));
-      console.log(err);
-    }
-  }
-
 
   async createDevBuildPipeline() {
     var tokenReplacedTemplate = JSON.stringify(createBuildDefTemplate)
@@ -137,31 +109,6 @@ export default class {
     }
   }
 
-  async pollForNewProject(projectName: string) : Promise<coreInterfaces.TeamProject | undefined> {
-        try{
-          console.log(chalk.blueBright("Polling for Newly Created Project"));
-        
-          const maxLoops: number = 500;
-          let core : ICoreApi = await this.connection.getCoreApi();
-          let project: coreInterfaces.TeamProject | undefined;
-        
-          let numLoops = 0;
-          while (numLoops < maxLoops) {
-              console.log(chalk.yellow(`Waiting for project creation to complete, loopnum ${numLoops}`))
-              project = await core.getProject(projectName);
-              numLoops += 1;
-              if (project) {
-                  break;
-              }
-          }
-
-
-          console.log(chalk.green(`Found New Project ${projectName} id:${project!.id as string}`));
-          return project;
-      }catch(err){
-        console.log(chalk.red("Error while polling for new project"));
-      }
-  }
 
   async createReleasePipeline() {
     try{
