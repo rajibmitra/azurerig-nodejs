@@ -2,7 +2,7 @@
 import sleep from "./extensions/sleep";
 import chalk from "chalk";
 import figlet from "figlet";
-import askQuestions from "./questions";
+import askQuestions from "./Questions";
 import DevOpsService from "./DevOpsService";
 import AzureService from "./AzureService";
 import DevOpsRestService from "./DevOpsRestService";
@@ -25,13 +25,6 @@ const run = async () => {
     //Login:
     await azureService.azureLogin();
 
-    //Create Common ResourceGroup
-    await azureService.createCommonResourceGroup();
-
-    //Create DevOps Project
-    await devOps.createProject(params.azDevOps.projName);
-
-    await sleep(5000);
 
     //Create Azure Service Connection
     await devOpsRest.createServiceConnection(`Azure Service Connection`);
@@ -39,11 +32,6 @@ const run = async () => {
     //Create Git Serevice Connection
     await devOpsRest.createGitServiceConnection("Git Connection");
 
-    //Create Slackhook Notification Service Connectors
-    await devOpsRest.createSlackBuildNotifications();
-    await devOpsRest.createSlackReleaseNotifications();
-
-    await sleep(10000);
 
     //Create Build Dev Pipeline
     await devOps.createDevBuildPipeline();
@@ -59,21 +47,6 @@ const run = async () => {
 
     //Create Infrastructure Pipeline
     await devOps.createInfrastructurePipeline();
-
-    //Create Build Pipeline for AzFunction to poast log alerts to Slack
-    await devOps.createSlackFunctionBuildPipeline();
-
-    //Create Release Pipeline for AzFunction to poast log alerts to Slack
-    await devOps.createSlackFunctionReleasePipeline();
-
-    //Trigger Build
-    await devOps.triggerSlackFunctionBuild();
-
-    //Create Alerting Action Group
-    await azureService.createActionGroup();
- 
-    //Create Log Alert
-    await azureService.createLogAlert();
 
   } catch (e) {
     console.log(e);

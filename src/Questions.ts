@@ -44,11 +44,6 @@ const askQuestions = async () => {
       type: "input",
       message:
         "Github Personal Access Token (check readme for instructions to get):"
-    },
-    {
-      name: "SLACK_HOOK_URL",
-      type: "input",
-      message: "Slack Webhook URL"
     }
   ];
 
